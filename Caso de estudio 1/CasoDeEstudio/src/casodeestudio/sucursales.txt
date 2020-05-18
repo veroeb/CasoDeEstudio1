@@ -1,0 +1,31 @@
+id,telefono,direccion,codigoPostal,ciudad,departamento
+Local 122,29827010,18 de Julio 580,97000,Durazno,Departamento de Durazno
+Local 101,29563823,Av. 18 de Julio 1593,11200,Montevideo,Departamento de Montevideo
+Local 102,22772840,Av. 8 de Octubre 3723,12000,Montevideo,Departamento de Montevideo
+Local 103,48005557,Av. 18 de Julio 880,11100,Montevideo,Departamento de Montevideo
+Local 104,43915192,Av. Agraciada 4214,11900,Montevideo,Departamento de Montevideo
+Local 111,45009170,19 de Abril 220,50000,Salto,Departamento de Salto
+Local 115,41008589,Bulevar General Artigas 1825,11200,Montevideo,Departamento de Montevideo
+Local 117,49719783,Aparicio Saravia 665,37000,Melo,Departamento de Cerro Largo
+Local 124,27448419,Av Artigas 810,90200,Las Piedras,Departamento de Canelones
+Local 126,29715075,Joaquin Suarez 259,45000,Tacuarembó,Departamento de Tacuarembó
+Local 132,49063791,25 de Mayo 600,20000,Maldonado,Departamento de Maldonado
+Local 134,45675827,Plaza Villanueva Saravia Pinto,37000,Melo,Departamento de Cerro Largo
+Local 139,25176588,Sarandí 950,40000,Rivera,Departamento de Rivera
+Local 140,45858725,Carlos Alberto Cal 738,20400,San Carlos,Departamento de Maldonado
+Local 141,46701435,Grecia 3396,12800,Montevideo,Departamento de Montevideo
+Local 143,46231300,Dr. Luis Alberto de Herrera 539,55000,Artigas,Departamento de Artigas
+Local 145,25827346,Presidente Berro 474,85000,Trinidad,Departamento de Flores
+Local 146,45782044,Juan Antonio Lavalleja 1774,33000,Treinta y Tres,Departamento de Treinta y Tres
+Local 147,27241995,General Artigas 221,27000,Rocha,Departamento de Rocha
+Local 150,48275906,Jose Salvo 100,70001,Juan L. Lacaze,Departamento de Colonia
+Local 151,42245389,Gral. Artigas 200,70200,Rosario,Departamento de Colonia
+Local 148,21042140,Piran 2101,11400,Montevideo,Departamento de Montevideo
+Local 155,45313566,Av. Sepé 51,40000,Rivera,Departamento de Rivera
+Local 156,27028089,Grito De Asencio 1499,50000,Salto,Departamento de Salto
+Local 157,27986493,José L. Terra 2220,11800,Montevideo,Departamento de Montevideo
+Local 158,29436069,Washington 1673,60000,Paysandú,Departamento de Paysandú
+Local 159,21615684,Dr Luis Alberto De Herrera 925,60000,Paysandú,Departamento de Paysandú
+Local 160,41301301,Zelmar Michelini 911,60000,Paysandú,Departamento de Paysandú
+Local 161,25119941,Zorrilla de San Martin 1705,60000,Paysandú,Departamento de Paysandú
+Local 162,23457605,Bulevar General Artigas 770,11300,Montevideo,Departamento de Montevideo
