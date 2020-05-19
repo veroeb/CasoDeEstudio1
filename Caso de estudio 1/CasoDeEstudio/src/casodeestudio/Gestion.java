@@ -2,7 +2,7 @@ package casodeestudio;
 
 public class Gestion {
 
-    public static void altaAlmacen(IAlmacen almacen, String linea) {
+    public static void altaAlmacen(Sucursal sucursal, String linea) {
         if (linea.contains("\"")) {
             String s = linea.substring(linea.indexOf("\"") + 1);
             s = s.substring(0, s.indexOf("\""));
@@ -14,17 +14,17 @@ public class Gestion {
             data[1] = data[1].substring(1);
         }
         Producto prod = new Producto(data[0].trim(), data[1].trim());
-        almacen.insertarProducto(prod);
+        sucursal.insertarProducto(prod);
 //        System.out.println("El valor del stock del producto " + prod.getEtiqueta() + " se ha incrementado $"
 //                + Integer.parseInt(data[2]) * Integer.parseInt(data[3]));
 //        return Integer.parseInt(data[2]) * Integer.parseInt(data[3]);
     }
 
-    public static void ventaAlmacen(IAlmacen almacen, String producto) {
+    public static void ventaAlmacen(Sucursal sucursal, String producto) {
         String[] data = producto.split(",");
         if (data.length == 2) {
-            almacen.restarStock(data[0].trim(), Integer.parseInt(data[1]));
-            IProducto prod = almacen.buscarPorCodigo(data[0].trim());
+            sucursal.restarStock(data[0].trim(), Integer.parseInt(data[1]));
+            Producto prod = sucursal.buscarPorCodigo(data[0].trim());
             if (prod != null) {
                 System.out.println("El valor del stock " + prod.getEtiqueta() + " se ha reducido $"
                         + Integer.parseInt(data[1]) * prod.getPrecio());
@@ -36,11 +36,11 @@ public class Gestion {
         }
     }
 
-    public static void eliminarProd(IAlmacen almacen, String codigo) {
-        IProducto prod = almacen.buscarPorCodigo(codigo.trim());
+    public static void eliminarProd(Sucursal sucursal, String codigo) {
+        Producto prod = sucursal.buscarPorCodigo(codigo.trim());
         if (prod != null) {
             double valor = prod.getStock() * prod.getPrecio();
-            almacen.eliminarProducto(codigo.trim());
+            sucursal.eliminarProducto(codigo.trim());
             System.out.println(
                     "El stock del producto " + prod.getEtiqueta() + " fue eliminado y tenía un valor de: $" + valor);
         } else {
@@ -48,8 +48,8 @@ public class Gestion {
         }
     }
 
-//    public static void contarProductos(IAlmacen almacen) {
-//        almacen.listarOrdenadoPorNombre();
+//    public static void contarProductos(Sucursal sucursal) {
+//        sucursal.imprimirProductos();
 //        Lista<Producto> lista = almacen.getListaProductos();
 //        Nodo<Producto> actual = lista.getPrimero();
 //        int contador = 0;
@@ -71,8 +71,8 @@ public class Gestion {
 //
 //    }
 
-    public static void existenciaDeProducto(IAlmacen almacen, String codigo) {
-        IProducto prod = almacen.buscarPorCodigo(codigo);
+    public static void existenciaDeProducto(Sucursal sucursal, String codigo) {
+        Producto prod = sucursal.buscarPorCodigo(codigo);
         if (prod != null) {
             if (prod.getStock() > 0) {
                 System.out.println("Hay " + prod.getStock() + " disponibles");
