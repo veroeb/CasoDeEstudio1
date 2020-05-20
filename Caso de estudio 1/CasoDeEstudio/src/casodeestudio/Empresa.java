@@ -19,11 +19,13 @@ public class Empresa implements IEmpresa{
     private String nombreEmpresa;
     private TArbolBB<Sucursal> arbolSucursales;
     private TArbolBB<Producto> arbolProductos;
+    private TArbolBB<Producto> arbolProductosPorNombre;
     
     public Empresa(String nombreEmpresa) {
         this.nombreEmpresa = nombreEmpresa;
         this.arbolSucursales = new TArbolBB<>();
         this.arbolProductos = new TArbolBB<>();
+        this.arbolProductosPorNombre = new TArbolBB<>();
     }
 
     @Override
@@ -75,6 +77,7 @@ public class Empresa implements IEmpresa{
 
     @Override
     public void insertarSucursalesArchivo(String nombreArchivo) {
+        System.out.println("Espere mientras se carga el archivo de sucursales...");
         ArrayList<String> sucursales = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
         
         for(String linea : sucursales){
@@ -100,16 +103,19 @@ public class Empresa implements IEmpresa{
     }
     
     public void insertarProducto(Producto producto) {
-        TElementoAB<Producto> unProducto = new TElementoAB<>(producto.getEtiqueta(), producto);
+        TElementoAB<Producto> productoId = new TElementoAB<>(producto.getEtiqueta(), producto);
+        TElementoAB<Producto> productoNombre = new TElementoAB<>(producto.getNombre(), producto);
         Producto p = buscarProducto(producto.getEtiqueta());
         
         if(p == null){
-            arbolProductos.insertar(unProducto);      //Inserta unicamente si no hay sucursales repetidas
+            arbolProductos.insertar(productoId);     
+//            arbolProductosPorNombre.insertar(productoNombre);     //Si quiero agregar los productos ordenados por nombre a la empresa misma
         }
     }
     
     
     public void insertarProductosArchivo(String nombreArchivo) {
+        System.out.println("Espere mientras se carga el archivo de productos...");
         ArrayList<String> productos = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
         Producto producto;
         TElementoAB<Producto> elem;
@@ -161,6 +167,7 @@ public class Empresa implements IEmpresa{
     }
     
     public void agregarStockArchivo(String nombreArchivo){
+        System.out.println("Espere mientras se carga el archivo de stock...");
         ArrayList<String> stockArchivo = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
         
         Producto producto;
@@ -182,9 +189,11 @@ public class Empresa implements IEmpresa{
             if(sucursal != null){
                 producto = buscarProducto(idProducto);
                 Producto prodAInsertar = new Producto(idProducto, producto.getNombre());
-//                prodAInsertar.setStock(stock);
+//                Producto productoPorNombre = new Producto(producto.getNombre(), producto.getStock().toString());
                 sucursal.insertarProducto(prodAInsertar);
+                sucursal.insertarProductoPorNombre(prodAInsertar);
                 sucursal.agregarStock(idProducto, stock);
+//                sucursal.agregarStockPorNombre(prodAInsertar.getNombre(), stock);
             }
         }        
     }
@@ -237,10 +246,24 @@ public class Empresa implements IEmpresa{
             buscarProductoEnSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);        
     }
     
-    public void listarProductosSucursal(Comparable idSucursal){
+//    public void listarProductosSucursal(Comparable idSucursal){
+//        Sucursal sucursal = buscarSucursal(idSucursal);
+//        System.out.println("Los productos existentes en la sucursal " + idSucursal + " son:");
+//        sucursal.imprimirProductos();
+//    }
+    
+//    public void listarProductosSucursal(Comparable idSucursal){
+//        Sucursal sucursal = buscarSucursal(idSucursal);
+//        System.out.println("Los productos existentes en la sucursal " + idSucursal + " son:");
+//        sucursal.buscarPorNombre();
+////        sucursal.imprimirProductos();
+//    }
+    
+    public void listarPorNombre(Comparable idSucursal){
         Sucursal sucursal = buscarSucursal(idSucursal);
-        System.out.println("Los productos existentes en la sucursal " + idSucursal + " son:");
-        sucursal.imprimirProductos();
+//        System.out.println(sucursal.listarPorNombre());
+
+        sucursal.listarPorNombre();
     }
     
     public void eliminarProductoDeTodasLasSucursales(Comparable claveProducto){
@@ -254,7 +277,9 @@ public class Empresa implements IEmpresa{
         if(elemSucursal.getHijoIzq() != null){
             eliminarProductoDeTodasLasSucursalesImplementacion(elemSucursal.getHijoIzq(), claveProducto);
         }
+        
         elemSucursal.getDatos().eliminarProducto(claveProducto);
+        
         if(elemSucursal.getHijoDer() != null)
             eliminarProductoDeTodasLasSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);       
         

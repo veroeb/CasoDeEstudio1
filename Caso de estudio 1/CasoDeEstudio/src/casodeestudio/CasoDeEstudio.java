@@ -88,9 +88,10 @@ public class CasoDeEstudio {
 //        empresa.getSucursales();
 //        empresa.getProductos();
         empresa.agregarStockArchivo("src/casodeestudio/stock.txt");
-        empresa.restarStockSucursal("Local 122", "1403796890", 81);
-        empresa.eliminarProductoDeTodasLasSucursales("1453060375");
-        empresa.buscarProductoEnSucursales("1453060782");
+//        empresa.restarStockSucursal("Local 122", "1403796890", 81);
+//        empresa.eliminarProductoDeTodasLasSucursales("1453060375");
+//        empresa.buscarProductoEnSucursales("1453060782");
+        empresa.listarPorNombre("Local 122");
 
     }
 

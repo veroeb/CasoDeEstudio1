@@ -45,7 +45,7 @@ public class ManejadorArchivosGenerico {
 				listaLineasArchivo.add(lineaActual);
 				lineaActual = br.readLine();
 			}
-			System.out.println("Archivo leido satisfactoriamente");
+//			System.out.println("Archivo leido satisfactoriamente");
 			br.close();
 			fr.close();
 		} catch (FileNotFoundException e) {
