@@ -13,12 +13,22 @@ public class Producto implements IProducto {
         this.precio = 0.0f;
         this.stock = 0;
     }
+    
+    @Override
+    public Comparable getEtiqueta() {
+        return this.etiqueta;
+    }
 
     @Override
     public String getNombre() {
         return nombre;
     }
 
+    @Override
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    
     @Override
     public Float getPrecio() {
         return precio;
@@ -32,7 +42,12 @@ public class Producto implements IProducto {
     @Override
     public Integer getStock() {
         return stock;
-    }
+    }    
+
+    @Override
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }    
 
     public int agregarStock(Integer stock) {
         this.stock += stock;
@@ -43,26 +58,12 @@ public class Producto implements IProducto {
     // y el campo stock quedará inalterado
     public Integer restarStock(Integer stock) {
         if (stock > this.stock) {
+            System.out.println("No se puede sacar mas stock del que tiene.");
             return -1;
         } else {
             setStock(this.stock - stock);
             return this.stock;
         }
-    }
-
-    @Override
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    @Override
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
-    @Override
-    public Comparable getEtiqueta() {
-        return this.etiqueta;
-    }
+    }    
 
 }

@@ -17,13 +17,13 @@ import java.util.Set;
 public class Empresa implements IEmpresa{
    
     private String nombreEmpresa;
-    private TArbolBB<Sucursal> listaSucursales;
-    private TArbolBB<Producto> listaProductos;
+    private TArbolBB<Sucursal> arbolSucursales;
+    private TArbolBB<Producto> arbolProductos;
     
     public Empresa(String nombreEmpresa) {
         this.nombreEmpresa = nombreEmpresa;
-        this.listaSucursales = new TArbolBB<>();
-        this.listaProductos = new TArbolBB<>();
+        this.arbolSucursales = new TArbolBB<>();
+        this.arbolProductos = new TArbolBB<>();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class Empresa implements IEmpresa{
 
     @Override
     public Sucursal buscarSucursal(Comparable idSucursal) {
-        TElementoAB<Sucursal> unaSucursal = listaSucursales.buscar(idSucursal);
+        TElementoAB<Sucursal> unaSucursal = arbolSucursales.buscar(idSucursal);
         
         if(unaSucursal != null){
 //            System.out.println(String.format("La sucursal %s ya se encuentra en el directorio", idSucursal));
@@ -51,7 +51,7 @@ public class Empresa implements IEmpresa{
     }
     
     public Producto buscarProducto(Comparable idProducto) {
-        TElementoAB<Producto> unProducto = listaProductos.buscar(idProducto);
+        TElementoAB<Producto> unProducto = arbolProductos.buscar(idProducto);
         
         if(unProducto != null){
 //            System.out.println(String.format("El producto %s ya se encuentra en el directorio", idProducto));
@@ -69,7 +69,7 @@ public class Empresa implements IEmpresa{
         Sucursal s = buscarSucursal(sucursal.getId());
         
         if(s == null){
-            listaSucursales.insertar(unaSucursal);      //Inserta unicamente si no hay sucursales repetidas
+            arbolSucursales.insertar(unaSucursal);      //Inserta unicamente si no hay sucursales repetidas
         }
     }
 
@@ -84,19 +84,19 @@ public class Empresa implements IEmpresa{
             Sucursal sucursal = new Sucursal(result[0], tel, result[2], cp, result[4], result[5]);
             insertarSucursal(sucursal);
         }
-        listaSucursales.inOrden();
+        arbolSucursales.inOrden();
     }
 
     @Override
     public TArbolBB<Sucursal> getSucursales() {
-        System.out.println("Las sucursales existentes son: " + listaSucursales.inOrden());
-        return listaSucursales;
+        System.out.println("Las sucursales existentes son: " + arbolSucursales.inOrden());
+        return arbolSucursales;
     }
     
   
     public TArbolBB<Producto> getProductos() {
-        System.out.println("Los productos existentes son: " + listaProductos.inOrden());
-        return listaProductos;
+        System.out.println("Los productos existentes son: " + arbolProductos.inOrden());
+        return arbolProductos;
     }
     
     public void insertarProducto(Producto producto) {
@@ -104,7 +104,7 @@ public class Empresa implements IEmpresa{
         Producto p = buscarProducto(producto.getEtiqueta());
         
         if(p == null){
-            listaProductos.insertar(unProducto);      //Inserta unicamente si no hay sucursales repetidas
+            arbolProductos.insertar(unProducto);      //Inserta unicamente si no hay sucursales repetidas
         }
     }
     
@@ -128,7 +128,7 @@ public class Empresa implements IEmpresa{
             datos[2] = datos[2].replace(",", "");
             producto = new Producto(datos[0], datos[1]);            
             producto.setPrecio(Float.parseFloat(datos[2]));
-            elem = new TElementoAB<>(datos[0], producto);           //no se si dejarlo asi o agregarle el precio como dato
+            elem = new TElementoAB<>(datos[0], producto);          
 //            elem = new TElementoAB<>(datos[0], datos[1] + ", " + datos[2]);
             insertarProducto(producto);
 //           producto.setStock(Integer.parseInt(datos[3]));
@@ -145,12 +145,12 @@ public class Empresa implements IEmpresa{
 //            producto.setPrecio(precio);
 //            insertarProducto(producto);
 //        }
-//        listaProductos.inOrden();
+//        arbolProductos.inOrden();
     }
 
     @Override
     public boolean directorioVacio() {
-        if(listaSucursales.esVacio()){
+        if(arbolSucursales.esVacio()){
             System.out.println("El directorio esta vacio");
             return true;
         }            
@@ -162,7 +162,17 @@ public class Empresa implements IEmpresa{
     
     public void agregarStockArchivo(String nombreArchivo){
         ArrayList<String> stockArchivo = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
-        for(String linea : stockArchivo){
+        
+        Producto producto;
+        
+        
+        //Se crean sets para que no se repitan los valores y para que no de StackOverflow
+        Set s = new HashSet(stockArchivo.size());
+        s.addAll(stockArchivo);
+        List<String> shuffledList = new ArrayList(s.size());
+        shuffledList.addAll(s);
+        
+        for(String linea : shuffledList){
             String[] result = linea.split(",");
             Comparable idSucursal = result[0];
             Comparable idProducto = result[1];
@@ -170,8 +180,10 @@ public class Empresa implements IEmpresa{
             Sucursal sucursal = buscarSucursal(idSucursal);
             
             if(sucursal != null){
-                Producto prod = buscarProducto(idProducto);
-                sucursal.insertarProducto(prod);
+                producto = buscarProducto(idProducto);
+                Producto prodAInsertar = new Producto(idProducto, producto.getNombre());
+//                prodAInsertar.setStock(stock);
+                sucursal.insertarProducto(prodAInsertar);
                 sucursal.agregarStock(idProducto, stock);
             }
         }        
@@ -181,8 +193,48 @@ public class Empresa implements IEmpresa{
         Sucursal sucursal = buscarSucursal(idSucursal);
             
         if(sucursal != null){
-            sucursal.restarStock(idProducto, cantidad);
+            Boolean hayStock = sucursal.restarStock(idProducto, cantidad);
+            
+            if(!hayStock){
+                buscarProductoEnSucursalesStock(idProducto, cantidad);
+            }
         }
+    }
+    
+    public void buscarProductoEnSucursalesStock(Comparable claveProducto, Integer stock){
+        if(!arbolSucursales.esVacio())
+            buscarProductoEnSucursalesStockImplementacion(arbolSucursales.getRaiz(), claveProducto, stock);
+        else
+            System.out.println("La lista de sucursales esta vacia");
+    }
+    
+    private void buscarProductoEnSucursalesStockImplementacion(TElementoAB<Sucursal> elemSucursal, Comparable claveProducto, Integer stock){
+        if(elemSucursal.getHijoIzq() != null){
+            buscarProductoEnSucursalesStockImplementacion(elemSucursal.getHijoIzq(), claveProducto, stock);
+        }
+        
+        elemSucursal.getDatos().buscarPorCodigoStock(claveProducto, stock);        
+        
+        if(elemSucursal.getHijoDer() != null)
+            buscarProductoEnSucursalesStockImplementacion(elemSucursal.getHijoDer(), claveProducto, stock);        
+    }
+    
+    public void buscarProductoEnSucursales(Comparable claveProducto){
+        if(!arbolSucursales.esVacio())
+            buscarProductoEnSucursalesImplementacion(arbolSucursales.getRaiz(), claveProducto);
+        else
+            System.out.println("La lista de sucursales esta vacia");
+    }
+    
+    private void buscarProductoEnSucursalesImplementacion(TElementoAB<Sucursal> elemSucursal, Comparable claveProducto){
+        if(elemSucursal.getHijoIzq() != null){
+            buscarProductoEnSucursalesImplementacion(elemSucursal.getHijoIzq(), claveProducto);
+        }
+        
+        elemSucursal.getDatos().buscarPorCodigo(claveProducto);        
+        
+        if(elemSucursal.getHijoDer() != null)
+            buscarProductoEnSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);        
     }
     
     public void listarProductosSucursal(Comparable idSucursal){
@@ -192,8 +244,8 @@ public class Empresa implements IEmpresa{
     }
     
     public void eliminarProductoDeTodasLasSucursales(Comparable claveProducto){
-        if(!listaSucursales.esVacio())
-            eliminarProductoDeTodasLasSucursalesImplementacion(listaSucursales.getRaiz(), claveProducto);
+        if(!arbolSucursales.esVacio())
+            eliminarProductoDeTodasLasSucursalesImplementacion(arbolSucursales.getRaiz(), claveProducto);
         else
             System.out.println("La lista de sucursales esta vacia");
     }
@@ -204,8 +256,7 @@ public class Empresa implements IEmpresa{
         }
         elemSucursal.getDatos().eliminarProducto(claveProducto);
         if(elemSucursal.getHijoDer() != null)
-            eliminarProductoDeTodasLasSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);
-        
+            eliminarProductoDeTodasLasSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);       
         
     }
     

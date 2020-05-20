@@ -56,7 +56,7 @@ public interface ISucursal {
      * @param cantidad
      * @return
      */
-    public Integer restarStock(Comparable clave, Integer cantidad);
+    public Boolean restarStock(Comparable clave, Integer cantidad);
 
     /**
      * Dado un código de producto, indicar las existencias del mismo en el
