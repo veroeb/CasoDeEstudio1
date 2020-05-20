@@ -259,10 +259,8 @@ public class Empresa implements IEmpresa{
 ////        sucursal.imprimirProductos();
 //    }
     
-    public void listarPorNombre(Comparable idSucursal){
+    public void listarProductosPorNombre(Comparable idSucursal){
         Sucursal sucursal = buscarSucursal(idSucursal);
-//        System.out.println(sucursal.listarPorNombre());
-
         sucursal.listarPorNombre();
     }
     

@@ -91,7 +91,7 @@ public class CasoDeEstudio {
 //        empresa.restarStockSucursal("Local 122", "1403796890", 81);
 //        empresa.eliminarProductoDeTodasLasSucursales("1453060375");
 //        empresa.buscarProductoEnSucursales("1453060782");
-        empresa.listarPorNombre("Local 122");
+//        empresa.listarProductosPorNombre("Local 122");
 
     }
 
