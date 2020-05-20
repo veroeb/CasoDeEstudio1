@@ -1,4 +1,3 @@
-id,telefono,direccion,codigoPostal,ciudad,departamento
 Local 122,29827010,18 de Julio 580,97000,Durazno,Departamento de Durazno
 Local 101,29563823,Av. 18 de Julio 1593,11200,Montevideo,Departamento de Montevideo
 Local 102,22772840,Av. 8 de Octubre 3723,12000,Montevideo,Departamento de Montevideo

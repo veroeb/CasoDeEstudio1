@@ -34,8 +34,9 @@ public class Producto implements IProducto {
         return stock;
     }
 
-    public void agergarStock(Integer stock) {
+    public int agregarStock(Integer stock) {
         this.stock += stock;
+        return this.stock;
     }
     
 // restarStock devolverá -1 si se pretende extraer más de lo que hay... 

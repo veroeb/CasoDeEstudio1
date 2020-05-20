@@ -101,14 +101,23 @@ public class Sucursal implements ISucursal{
 
     @Override
     public String imprimirProductos() {
+//        String str;
+//        for(Producto p : productos){
+////            str = p.getEtiqueta() + p.getStock().toString();
+//            str = String.format("Producto %s, stock %i", p.getEtiqueta(), p.getStock());
+//        }
+//        return str;
+        
         return productos.inOrden();
     }
 
     @Override
     public Boolean agregarStock(Comparable clave, Integer cantidad) {
         TElementoAB<Producto> prod = productos.buscar(clave);
-        int cantidadActual = prod.getDatos().getStock();
-        prod.getDatos().setStock(cantidad + cantidadActual);
+        
+        int stock = prod.getDatos().agregarStock(cantidad);
+//        System.out.println(String.format("%d El producto %s tiene %s stock", contador, clave, stock));
+        
         return true;
     }
 
@@ -132,6 +141,7 @@ public class Sucursal implements ISucursal{
     @Override
     public boolean eliminarProducto(Comparable clave) {
         productos.eliminar(clave);
+        System.out.println(String.format("El producto %s ha sido eliminado de la sucursal %s", clave, id));
         return true;
     }
 }
