@@ -260,9 +260,15 @@ public class Sucursal implements ISucursal{
 ////        return productosPorNombre;
 //    }
     
-    public void listarPorNombre(){
+    public void listarPorNombre(Boolean departamento){
         if(!productosPorNombre.esVacio()){
-            System.out.println(String.format("\nLos productos existentes en la sucursal \"%s\" son:", id));
+            if(!departamento){
+                System.out.println(String.format("\nLos productos existentes en la sucursal \"%s\" son:", id));                
+            }
+            else{
+                System.out.println(String.format("\nProductos existentes de %s, %s, %d, %s son:", 
+                        this.departamento, this.ciudad, this.codigoPostal, this.id));                
+            }
             listarPorNombreImplementacion(productosPorNombre.getRaiz());            
         }
         else

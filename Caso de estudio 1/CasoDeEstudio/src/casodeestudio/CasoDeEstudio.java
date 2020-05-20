@@ -92,6 +92,7 @@ public class CasoDeEstudio {
 //        empresa.eliminarProductoDeTodasLasSucursales("1453060375");
 //        empresa.buscarProductoEnSucursales("1453060782");
 //        empresa.listarProductosPorNombre("Local 122");
+        empresa.listarPorDepartamento();
 
     }
 

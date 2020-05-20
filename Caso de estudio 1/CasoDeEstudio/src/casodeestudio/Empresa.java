@@ -18,6 +18,7 @@ public class Empresa implements IEmpresa{
    
     private String nombreEmpresa;
     private TArbolBB<Sucursal> arbolSucursales;
+    private TArbolBB<Sucursal> arbolSucursalesPorDepartamento;
     private TArbolBB<Producto> arbolProductos;
     private TArbolBB<Producto> arbolProductosPorNombre;
     
@@ -26,6 +27,7 @@ public class Empresa implements IEmpresa{
         this.arbolSucursales = new TArbolBB<>();
         this.arbolProductos = new TArbolBB<>();
         this.arbolProductosPorNombre = new TArbolBB<>();
+        this.arbolSucursalesPorDepartamento = new TArbolBB<>();
     }
 
     @Override
@@ -41,6 +43,19 @@ public class Empresa implements IEmpresa{
     @Override
     public Sucursal buscarSucursal(Comparable idSucursal) {
         TElementoAB<Sucursal> unaSucursal = arbolSucursales.buscar(idSucursal);
+        
+        if(unaSucursal != null){
+//            System.out.println(String.format("La sucursal %s ya se encuentra en el directorio", idSucursal));
+            return unaSucursal.getDatos();
+        }
+        else{
+//            System.out.println(String.format("La sucursal %s no se encuentra en el directorio", idSucursal));
+            return null;
+        }
+    }
+    
+    public Sucursal buscarSucursalPorDepartamento(Comparable stringCompuesto) {
+        TElementoAB<Sucursal> unaSucursal = arbolSucursalesPorDepartamento.buscar(stringCompuesto);
         
         if(unaSucursal != null){
 //            System.out.println(String.format("La sucursal %s ya se encuentra en el directorio", idSucursal));
@@ -74,18 +89,34 @@ public class Empresa implements IEmpresa{
             arbolSucursales.insertar(unaSucursal);      //Inserta unicamente si no hay sucursales repetidas
         }
     }
+    
+    public void insertarSucursalPorDepartamento(Sucursal sucursal) {
+        String stringCompuesto;
+        stringCompuesto = sucursal.getDepartamento() + ", " + sucursal.getCiudad() + ", " 
+                + sucursal.getCodigoPostal() + ", " + sucursal.getId();
+        TElementoAB<Sucursal> unaSucursal = new TElementoAB<>(stringCompuesto, sucursal);
+        Sucursal s = buscarSucursalPorDepartamento(stringCompuesto);        
+        
+        if(s == null){
+            arbolSucursalesPorDepartamento.insertar(unaSucursal);      //Inserta unicamente si no hay sucursales repetidas
+        }
+    }
 
     @Override
     public void insertarSucursalesArchivo(String nombreArchivo) {
         System.out.println("Espere mientras se carga el archivo de sucursales...");
         ArrayList<String> sucursales = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
         
+//        String stringCompuesto;
+        
         for(String linea : sucursales){
             String[] result = linea.split(",");
             int tel = Integer.parseInt(result[1]);
             int cp = Integer.parseInt(result[3]);
+//            stringCompuesto = result[5] + ", " + result[4] + ", " + result[3];
             Sucursal sucursal = new Sucursal(result[0], tel, result[2], cp, result[4], result[5]);
             insertarSucursal(sucursal);
+            insertarSucursalPorDepartamento(sucursal);
         }
         arbolSucursales.inOrden();
     }
@@ -261,7 +292,7 @@ public class Empresa implements IEmpresa{
     
     public void listarProductosPorNombre(Comparable idSucursal){
         Sucursal sucursal = buscarSucursal(idSucursal);
-        sucursal.listarPorNombre();
+        sucursal.listarPorNombre(false);
     }
     
     public void eliminarProductoDeTodasLasSucursales(Comparable claveProducto){
@@ -282,5 +313,84 @@ public class Empresa implements IEmpresa{
             eliminarProductoDeTodasLasSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);       
         
     }
+    
+    public void listarPorDepartamento(){
+        if(!arbolSucursalesPorDepartamento.esVacio())
+            listarPorDepartamentoImplementacion(arbolSucursalesPorDepartamento.getRaiz());
+        else
+            System.out.println("La lista de sucursales esta vacia");
+    }
+    
+    private void listarPorDepartamentoImplementacion(TElementoAB<Sucursal> elemSucursal){
+        if(elemSucursal.getHijoIzq() != null){
+            listarPorDepartamentoImplementacion(elemSucursal.getHijoIzq());
+        }
+        
+        elemSucursal.getDatos().listarPorNombre(true);
+        
+        if(elemSucursal.getHijoDer() != null)
+            listarPorDepartamentoImplementacion(elemSucursal.getHijoDer());       
+        
+    }
+    
+//    public void listarPorDepartamentoCiudad(){
+//        if(!arbolSucursalesPorDepartamento.esVacio())
+//            listarPorDepartamentoCiudadImplementacion(arbolSucursalesPorDepartamento.getRaiz());
+//        else
+//            System.out.println("La lista de sucursales esta vacia");
+//    }
+//    
+//    private Boolean listarPorDepartamentoCiudadImplementacion(TElementoAB<Sucursal> elemSucursal){
+//        Comparable ciudadSucursal = elemSucursal.getDatos().getCiudad();
+//        Comparable ciudadSucursalIzq = elemSucursal.getHijoIzq().getDatos().getCiudad();
+//        Comparable ciudadSucursalDer = elemSucursal.getHijoDer().getDatos().getCiudad();
+//        
+//        if(elemSucursal.getHijoIzq() != null){
+//            listarPorDepartamentoCiudadImplementacion(elemSucursal.getHijoIzq());
+//        }
+//        
+////        elemSucursal.getDatos().eliminarProducto(claveProducto);
+//        
+//        if(elemSucursal.getHijoDer() != null)
+//            listarPorDepartamentoCiudadImplementacion(elemSucursal.getHijoDer());     
+//        
+//        
+//        if (ciudadSucursal.compareTo(ciudadSucursalIzq) == 0) {
+//            return false;
+//        } 
+//        else if (ciudadSucursal.compareTo(ciudadSucursalIzq) < 0) {
+//            if (elemSucursal.getHijoIzq() != null) {
+//                return elemSucursal.getHijoIzq().insertar(elemSucursal);
+//            } 
+//            else {
+//                this.elemSucursal.getHijoIzq() = elemSucursal;
+//                return true;
+//            }
+//        } 
+//        else {
+//            if (elemSucursal.getHijoDer() != null) {
+//                return elemSucursal.getHijoDer().insertar(elemSucursal);
+//            } 
+//            else {
+//                this.elemSucursal.getHijoDer() = elemSucursal;
+//                return true;
+//            }
+//        }
+//        
+//        if (arbolSucursalesPorDepartamento.esVacio()) {
+//            return null;
+//        } else if (unaEtiqueta.compareTo(etiqueta) == 0) {
+////            System.out.println("El contador imprime: " + contador);
+//            return this;
+//        } else if (unaEtiqueta.compareTo(etiqueta) < 0 && hijoIzq != null) {
+//            return hijoIzq.buscar(unaEtiqueta);
+//
+//        } else if (unaEtiqueta.compareTo(etiqueta) > 0 && hijoDer != null) {
+//            return hijoDer.buscar(unaEtiqueta);
+//        } else {
+//            return null;
+//        }
+//        
+//    }
     
 }
