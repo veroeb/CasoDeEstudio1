@@ -19,14 +19,16 @@ public class Empresa implements IEmpresa{
     private String nombreEmpresa;
     private TArbolBB<Sucursal> arbolSucursales;
     private TArbolBB<Sucursal> arbolSucursalesPorDepartamento;
-    private TArbolBB<Producto> arbolProductos;
-    private TArbolBB<Producto> arbolProductosPorNombre;
+    private TArbolBB<Producto> arbolProductosBase;
+    private TArbolBB<Producto> arbolProductosEmpresa;
+    private TArbolBB<Producto> arbolProductosEmpresaPorNombre;
     
     public Empresa(String nombreEmpresa) {
         this.nombreEmpresa = nombreEmpresa;
         this.arbolSucursales = new TArbolBB<>();
-        this.arbolProductos = new TArbolBB<>();
-        this.arbolProductosPorNombre = new TArbolBB<>();
+        this.arbolProductosBase = new TArbolBB<>();
+        this.arbolProductosEmpresa = new TArbolBB<>();
+        this.arbolProductosEmpresaPorNombre = new TArbolBB<>();
         this.arbolSucursalesPorDepartamento = new TArbolBB<>();
     }
 
@@ -38,6 +40,30 @@ public class Empresa implements IEmpresa{
     @Override
     public void setNombre(String nombre) {
         this.nombreEmpresa = nombre;
+    }
+    
+    @Override
+    public TArbolBB<Sucursal> getSucursales() {
+        System.out.println("Las sucursales existentes son: " + arbolSucursales.inOrden());
+        return arbolSucursales;
+    }
+    
+  
+    public TArbolBB<Producto> getProductos() {
+        System.out.println("Los productos existentes son: " + arbolProductosBase.inOrden());
+        return arbolProductosBase;
+    }
+    
+     @Override
+    public boolean directorioVacio() {
+        if(arbolSucursales.esVacio()){
+            System.out.println("El directorio esta vacio");
+            return true;
+        }            
+        else{
+            System.out.println("El directorio no esta vacio");
+            return false;
+        }  
     }
 
     @Override
@@ -67,15 +93,13 @@ public class Empresa implements IEmpresa{
         }
     }
     
-    public Producto buscarProducto(Comparable idProducto) {
-        TElementoAB<Producto> unProducto = arbolProductos.buscar(idProducto);
+    private Producto buscarProducto(Comparable idProducto) {
+        TElementoAB<Producto> unProducto = arbolProductosBase.buscar(idProducto);
         
         if(unProducto != null){
-//            System.out.println(String.format("El producto %s ya se encuentra en el directorio", idProducto));
             return unProducto.getDatos();
         }
         else{
-//            System.out.println(String.format("El producto %s no se encuentra en el directorio", idProducto));
             return null;
         }
     }
@@ -121,26 +145,16 @@ public class Empresa implements IEmpresa{
         arbolSucursales.inOrden();
     }
 
-    @Override
-    public TArbolBB<Sucursal> getSucursales() {
-        System.out.println("Las sucursales existentes son: " + arbolSucursales.inOrden());
-        return arbolSucursales;
-    }
     
-  
-    public TArbolBB<Producto> getProductos() {
-        System.out.println("Los productos existentes son: " + arbolProductos.inOrden());
-        return arbolProductos;
-    }
     
     public void insertarProducto(Producto producto) {
         TElementoAB<Producto> productoId = new TElementoAB<>(producto.getEtiqueta(), producto);
-        TElementoAB<Producto> productoNombre = new TElementoAB<>(producto.getNombre(), producto);
+//        TElementoAB<Producto> productoNombre = new TElementoAB<>(producto.getNombre(), producto);
         Producto p = buscarProducto(producto.getEtiqueta());
         
         if(p == null){
-            arbolProductos.insertar(productoId);     
-//            arbolProductosPorNombre.insertar(productoNombre);     //Si quiero agregar los productos ordenados por nombre a la empresa misma
+            arbolProductosBase.insertar(productoId);     
+//            arbolProductosEmpresa.insertar(productoId);     //Si quiero agregar los productos ordenados por nombre a la empresa misma
         }
     }
     
@@ -182,20 +196,102 @@ public class Empresa implements IEmpresa{
 //            producto.setPrecio(precio);
 //            insertarProducto(producto);
 //        }
-//        arbolProductos.inOrden();
+//        arbolProductosBase.inOrden();
     }
 
-    @Override
-    public boolean directorioVacio() {
-        if(arbolSucursales.esVacio()){
-            System.out.println("El directorio esta vacio");
-            return true;
-        }            
-        else{
-            System.out.println("El directorio no esta vacio");
-            return false;
-        }  
+   
+    
+    public void agregarStockEmpresa(String nombreArchivo){
+        System.out.println("Espere mientras se carga el archivo de stock a la empresa...");
+        ArrayList<String> stockArchivo = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
+        
+        Producto producto;        
+        
+        //Se crean sets para que no se repitan los valores y para que no de StackOverflow
+        Set s = new HashSet(stockArchivo.size());
+        s.addAll(stockArchivo);
+        List<String> shuffledList = new ArrayList(s.size());
+        shuffledList.addAll(s);
+        
+        for(String linea : shuffledList){
+            String[] result = linea.split(",");
+            Comparable idProducto = result[0];
+            int stock = Integer.parseInt(result[1]);
+            
+            producto = buscarProducto(idProducto);
+            
+            if(producto != null){
+                
+//                producto.agregarStock(stock);
+                Producto prodAInsertar = new Producto(idProducto, producto.getNombre());
+                TElementoAB<Producto> elemProducto = new TElementoAB<>(prodAInsertar.getEtiqueta(), prodAInsertar);
+                arbolProductosEmpresa.insertar(elemProducto);
+                TElementoAB<Producto> productoPorNombre = new TElementoAB<>(prodAInsertar.getNombre(), prodAInsertar);
+                arbolProductosEmpresaPorNombre.insertar(productoPorNombre);
+                prodAInsertar.agregarStock(stock);                
+//                System.out.println(String.format("- El producto %s tiene %d de stock.", prodAInsertar.getEtiqueta(), prodAInsertar.getStock()));
+            }           
+        }          
     }
+    
+    
+     public Boolean restarStockEmpresa(Comparable clave, Integer cantidad) {
+        TElementoAB<Producto> prod = arbolProductosEmpresa.buscar(clave);
+        if(prod != null){
+            int stockFinal = prod.getDatos().restarStock(cantidad);
+            if(stockFinal != -1)
+                return true;
+            else
+                return false;
+        }
+        else{
+            System.out.println("Ese producto no se encuentra en la sucursal.");
+            return false;
+        }
+    }
+     
+     
+    public boolean eliminarProducto(Comparable clave) {
+        arbolProductosEmpresa.eliminar(clave);
+        System.out.println(String.format("El producto %s ha sido eliminado de la empresa %s.", clave, nombreEmpresa));
+        return true;
+    }
+    
+    
+    public void buscarProductoEmpresa(Comparable clave){
+        TElementoAB<Producto> producto = arbolProductosEmpresa.buscar(clave);
+        
+        if(producto != null){
+            System.out.println(String.format("El producto %s se encuentra en la empresa con un stock de %d.", 
+                    clave, producto.getDatos().getStock()));
+        }
+        else{
+            System.out.println("El producto no se encuentra en la empresa.");
+        }
+    }
+    
+    
+    public void listarPorNombre(){
+        if(!arbolProductosEmpresaPorNombre.esVacio()){
+            System.out.println(String.format("\nLos productos existentes en la empresa \"%s\" son:", nombreEmpresa));  
+            listarPorNombreImplementacion(arbolProductosEmpresaPorNombre.getRaiz());               
+        }
+        else
+            System.out.println("La empresa esta vacia");
+    }
+    
+    private void listarPorNombreImplementacion(TElementoAB<Producto> producto){
+        if(producto.getHijoIzq() != null){
+            listarPorNombreImplementacion(producto.getHijoIzq());
+        }
+        
+        System.out.println(String.format("- %s; stock %d", producto.getEtiqueta(), producto.getDatos().getStock()));
+        
+        if(producto.getHijoDer() != null)
+            listarPorNombreImplementacion(producto.getHijoDer());    
+    }
+    
+    
     
     public void agregarStockArchivo(String nombreArchivo){
         System.out.println("Espere mientras se carga el archivo de stock...");
@@ -259,6 +355,37 @@ public class Empresa implements IEmpresa{
             buscarProductoEnSucursalesStockImplementacion(elemSucursal.getHijoDer(), claveProducto, stock);        
     }
     
+//    public void buscarProductoEnEmpresa(Comparable claveProducto){
+//        if(!arbolSucursales.esVacio())
+//            buscarProductoEnEmpresaImplementacion(arbolProductosEmpresa.getRaiz(), claveProducto);
+//        else
+//            System.out.println("La lista de productos esta vacia");
+//    }
+//    
+//    private void buscarProductoEnEmpresaImplementacion(TElementoAB<Producto> producto, Comparable claveProducto){
+//        if(producto.getHijoIzq() != null){
+//            buscarProductoEnEmpresaImplementacion(producto.getHijoIzq(), claveProducto);
+//        }
+//        
+//        producto.getDatos().(claveProducto);        
+//        
+//        if(producto.getHijoDer() != null)
+//            buscarProductoEnEmpresaImplementacion(producto.getHijoDer(), claveProducto);        
+//    }
+    
+//    public void listarProductosSucursal(Comparable idSucursal){
+//        Sucursal sucursal = buscarSucursal(idSucursal);
+//        System.out.println("Los productos existentes en la sucursal " + idSucursal + " son:");
+//        sucursal.imprimirProductos();
+//    }
+    
+//    public void listarProductosSucursal(Comparable idSucursal){
+//        Sucursal sucursal = buscarSucursal(idSucursal);
+//        System.out.println("Los productos existentes en la sucursal " + idSucursal + " son:");
+//        sucursal.buscarPorNombre();
+////        sucursal.imprimirProductos();
+//    }
+    
     public void buscarProductoEnSucursales(Comparable claveProducto){
         if(!arbolSucursales.esVacio())
             buscarProductoEnSucursalesImplementacion(arbolSucursales.getRaiz(), claveProducto);
@@ -277,23 +404,6 @@ public class Empresa implements IEmpresa{
             buscarProductoEnSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);        
     }
     
-//    public void listarProductosSucursal(Comparable idSucursal){
-//        Sucursal sucursal = buscarSucursal(idSucursal);
-//        System.out.println("Los productos existentes en la sucursal " + idSucursal + " son:");
-//        sucursal.imprimirProductos();
-//    }
-    
-//    public void listarProductosSucursal(Comparable idSucursal){
-//        Sucursal sucursal = buscarSucursal(idSucursal);
-//        System.out.println("Los productos existentes en la sucursal " + idSucursal + " son:");
-//        sucursal.buscarPorNombre();
-////        sucursal.imprimirProductos();
-//    }
-    
-    public void listarProductosPorNombre(Comparable idSucursal){
-        Sucursal sucursal = buscarSucursal(idSucursal);
-        sucursal.listarPorNombre(false);
-    }
     
     public void eliminarProductoDeTodasLasSucursales(Comparable claveProducto){
         if(!arbolSucursales.esVacio())
@@ -312,6 +422,11 @@ public class Empresa implements IEmpresa{
         if(elemSucursal.getHijoDer() != null)
             eliminarProductoDeTodasLasSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);       
         
+    }
+    
+    public void listarProductosPorNombre(Comparable idSucursal){
+        Sucursal sucursal = buscarSucursal(idSucursal);
+        sucursal.listarPorNombre(false);
     }
     
     public void listarPorDepartamento(){

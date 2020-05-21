@@ -60,7 +60,12 @@ public class Producto implements IProducto {
         if (stock > this.stock) {
             System.out.println("No se puede sacar mas stock del que tiene.");
             return -1;
-        } else {
+        } 
+        else if(stock == this.stock){
+            System.out.println("El producto se quedó sin stock.");
+            return this.stock;
+        }
+        else {
             setStock(this.stock - stock);
             return this.stock;
         }

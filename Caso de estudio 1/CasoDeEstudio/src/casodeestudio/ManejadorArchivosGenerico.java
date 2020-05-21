@@ -36,7 +36,7 @@ public class ManejadorArchivosGenerico {
 
 	public static ArrayList leerArchivo(String nombreCompletoArchivo) {
 		FileReader fr;
-		ArrayList<String> listaLineasArchivo = new ArrayList<String>();
+		ArrayList<String> listaLineasArchivo = new ArrayList<>();
 		try {
 			fr = new FileReader(nombreCompletoArchivo);
 			BufferedReader br = new BufferedReader(fr);
