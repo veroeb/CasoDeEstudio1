@@ -5,10 +5,6 @@
  */
 package casodeestudio;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -115,10 +111,7 @@ public class Sucursal implements ISucursal{
     public Boolean agregarStock(Comparable clave, Integer cantidad) {
         TElementoAB<Producto> prod = productos.buscar(clave);
         if(prod != null){
-            int stock = prod.getDatos().agregarStock(cantidad);
-//            prod.getDatos().setStock(cantidad);
-//        System.out.println(String.format("Sucursal %s. El producto %s tiene %d stock", id, clave, stock));
-
+            prod.getDatos().agregarStock(cantidad);
             return true;            
         }
         else{
@@ -131,10 +124,7 @@ public class Sucursal implements ISucursal{
     public Boolean agregarStockPorNombre(Comparable clave, Integer cantidad) {
         TElementoAB<Producto> prodNombre = productosPorNombre.buscar(clave);
         if(prodNombre != null){
-            int stockNombre = prodNombre.getDatos().agregarStock(cantidad);
-//            prod.getDatos().setStock(cantidad);
-//        System.out.println(String.format("Sucursal %s. El producto %s tiene %d stock", id, clave, stock));
-
+            prodNombre.getDatos().agregarStock(cantidad);
             return true;            
         }
         else{
@@ -142,21 +132,6 @@ public class Sucursal implements ISucursal{
             return false;
         }
     }
-
-//    @Override
-//    public Integer restarStock(Comparable clave, Integer cantidad) {
-//        TElementoAB<Producto> prod = productos.buscar(clave);
-//        System.out.println(String.format("Sucursal %s, producto %s, stock %d", id, clave, prod.getDatos().getStock()));
-//        int stockFinal = prod.getDatos().restarStock(cantidad);
-//        System.out.println(String.format("Sucursal %s, producto %s, el nuevo stock es %d", id, clave, stockFinal));
-////        int cantidadActual = prod.getDatos().getStock();
-////        if (cantidadActual - cantidad >= 0)
-////            prod.getDatos().setStock(cantidadActual - cantidad);
-////        else
-////            return -1;// No se puede restart stock
-////        return cantidadActual - cantidad;
-//        return stockFinal;
-//    }
     
     @Override
     public Boolean restarStock(Comparable clave, Integer cantidad) {
@@ -172,6 +147,13 @@ public class Sucursal implements ISucursal{
             System.out.println("Ese producto no se encuentra en la sucursal.");
             return false;
         }
+    }
+    
+    @Override
+    public boolean eliminarProducto(Comparable clave) {
+        productos.eliminar(clave);
+        System.out.println(String.format("El producto %s ha sido eliminado de la sucursal %s", clave, id));
+        return true;
     }
 
     @Override
@@ -203,63 +185,6 @@ public class Sucursal implements ISucursal{
         }
     }
     
-//    public void buscarPorNombre(){
-//        if(!productos.esVacio()){
-//            buscarPorNombreImplementacion();
-////            listarPorNombre();
-//        }        
-//        else
-//            System.out.println("La lista de sucursales esta vacia");
-//    }
-    
-//    private void buscarPorNombreImplementacion(TElementoAB<Producto> producto){
-//        if(producto.getHijoIzq() != null){
-//            buscarPorNombreImplementacion(producto.getHijoIzq());
-//        }
-//        
-//        System.out.println(String.format("%s con stock %d.", producto.getDatos().getNombre(), producto.getDatos().getStock()));
-//        
-//        if(producto.getHijoDer() != null)
-//            buscarPorNombreImplementacion(producto.getHijoDer());    
-//        
-//        
-//    }
-    
-//    private void buscarPorNombreImplementacion() {
-//        TElementoAB<Producto> producto = productos.getRaiz();
-//        productosPorNombre = new TArbolBB<>();
-//        
-//        if(producto.getHijoIzq()!= null)
-//            buscarPorNombreImplementacion();   
-//        
-////        Set s = new HashSet(productos.tamaño());
-////        s.addAll(productos);
-////        List<String> shuffledList = new ArrayList(s.size());
-////        shuffledList.addAll(s);
-//        
-//        TElementoAB<Producto> productoNuevo = new TElementoAB<>(producto.getDatos().getNombre(), producto.getDatos());
-//        productosPorNombre.insertar(productoNuevo);
-//        
-//        if(producto.getHijoDer() != null)
-//            buscarPorNombreImplementacion();       
-//        
-//        
-////        if (nombreProducto.compareTo(nombre) == 0) {            
-////            System.out.println(String.format("- %s con stock %d.", nombre, stock));
-////        } 
-////        else if (nombreProducto.compareTo(nombre) < 0 && producto.getHijoIzq() != null) {
-////            buscarPorNombreImplementacion(producto.getHijoIzq(), nombreProducto);
-////
-////        } 
-////        else if (nombreProducto.compareTo(nombre) > 0 && producto.getHijoDer() != null) {
-////            buscarPorNombreImplementacion(producto.getHijoDer(), nombreProducto);
-////        } 
-////        else {
-////            System.out.println("No existe el producto");
-////        }
-////        return productosPorNombre;
-//    }
-    
     public void listarPorNombre(Boolean departamento){
         if(!productosPorNombre.esVacio()){
             if(!departamento){
@@ -284,35 +209,11 @@ public class Sucursal implements ISucursal{
         
         if(producto.getHijoDer() != null)
             listarPorNombreImplementacion(producto.getHijoDer());    
-    }
-    
-    
-//    public Producto buscarPorNombre() {
-////        TElementoAB<Producto> prod = productos.buscar(clave);
-//        productos.getRaiz().getDatos().getNombre();
-//        
-//        if(prod != null){
-//            System.out.println(String.format("El producto %s se encuentra en la sucursal %s con stock %d.", 
-//                    prod.getDatos().getNombre(), id, prod.getDatos().getStock()));
-//            return prod.getDatos();            
-//        }
-//        else{
-//            System.out.println(String.format("El producto %s no se encuentra en la sucursal %s.", clave, id));
-//            return null;
-//        }
-//    }
-
-    @Override
-    public boolean eliminarProducto(Comparable clave) {
-        productos.eliminar(clave);
-        System.out.println(String.format("El producto %s ha sido eliminado de la sucursal %s", clave, id));
-        return true;
-    }
+    }    
     
     @Override
     public String imprimirProductos() {
         return productos.inOrden();
     }
-
 
 }

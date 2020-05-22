@@ -110,8 +110,6 @@ public class TElementoAB<T> implements IElementoAB<T> {
         if (hijoDer != null) {
             res += hijoDer.inOrden();
         }
-        else
-            res += this.etiqueta.toString();
         return res;
     }
 
