@@ -49,10 +49,8 @@ public class TElementoAB<T> implements IElementoAB<T> {
     @Override
     public TElementoAB<T> buscar(Comparable unaEtiqueta) {
         if (esVacio()) {
-//            System.out.println("El contador imprime: " + contador);
             return null;
         } else if (unaEtiqueta.compareTo(etiqueta) == 0) {
-//            System.out.println("El contador imprime: " + contador);
             return this;
         } else if (unaEtiqueta.compareTo(etiqueta) < 0 && hijoIzq != null) {
             return hijoIzq.buscar(unaEtiqueta);
@@ -67,14 +65,12 @@ public class TElementoAB<T> implements IElementoAB<T> {
     @Override
     public boolean insertar(TElementoAB<T> elemento) {
         if (elemento.getEtiqueta().compareTo(etiqueta) == 0) {
-//            System.out.println("El contador imprime: " + contador);
             return false;
         } else if (elemento.getEtiqueta().compareTo(etiqueta) < 0) {
             if (hijoIzq != null) {
                 return hijoIzq.insertar(elemento);
             } else {
                 this.hijoIzq = elemento;
-//                System.out.println("El contador imprime: " + contador);
                 return true;
             }
         } else {
@@ -82,7 +78,6 @@ public class TElementoAB<T> implements IElementoAB<T> {
                 return hijoDer.insertar(elemento);
             } else {
                 this.hijoDer = elemento;
-//                System.out.println("El contador imprime: " + contador);
                 return true;
             }
         }

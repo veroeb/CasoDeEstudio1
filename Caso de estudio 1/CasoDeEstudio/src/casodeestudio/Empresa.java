@@ -1,14 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package casodeestudio;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.Random;
 
 /**
  *
@@ -17,11 +9,11 @@ import java.util.Set;
 public class Empresa implements IEmpresa{
    
     private String nombreEmpresa;
-    private TArbolBB<Sucursal> arbolSucursales;
-    private TArbolBB<Sucursal> arbolSucursalesPorDepartamento;
-    private TArbolBB<Producto> arbolProductosBase;
-    private TArbolBB<Producto> arbolProductosEmpresa;
-    private TArbolBB<Producto> arbolProductosEmpresaPorNombre;
+    private final TArbolBB<Sucursal> arbolSucursales;
+    private final TArbolBB<Sucursal> arbolSucursalesPorDepartamento;
+    private final TArbolBB<Producto> arbolProductosBase;
+    private final TArbolBB<Producto> arbolProductosEmpresa;
+    private final TArbolBB<Producto> arbolProductosEmpresaPorNombre;
     
     public Empresa(String nombreEmpresa) {
         this.nombreEmpresa = nombreEmpresa;
@@ -88,53 +80,57 @@ public class Empresa implements IEmpresa{
         
     public void insertarProductosArchivo(String nombreArchivo) {
         System.out.println("Espere mientras se carga el archivo de productos...");
-        ArrayList<String> productos = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
-        
-        //Se crean sets para que no se repitan los valores y para que no de StackOverflow
-        Set s = new HashSet(productos.size());
-        s.addAll(productos);
-        List<String> shuffledList = new ArrayList(s.size());
-        shuffledList.addAll(s);
+    
+        String[] lineas = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
+        Random random = new Random();
 
-        for (String data1 : shuffledList) {
-            String[] datos = data1.split("\"");
+        for(int i = 0; i < lineas.length; i++){
+            int randomIndice = random.nextInt(lineas.length);
+            String resultado = lineas[randomIndice];
+            lineas[randomIndice] = lineas[i];
+            lineas[i] = resultado;
+        }
+
+        for(String linea : lineas){
+            String[] datos = linea.split("\"");
             datos[0] = datos[0].replace(",", "");
             datos[1] = datos[1].replace("\"", "");
             datos[2] = datos[2].replace(",", "");
             Producto producto = new Producto(datos[0], datos[1]);            
-            producto.setPrecio(Float.parseFloat(datos[2]));      
+            producto.setPrecio(Float.parseFloat(datos[2]));       
             insertarProducto(producto);
         }
     }   
     
     public void agregarStockEmpresa(String nombreArchivo){
         System.out.println("Espere mientras se carga el archivo de stock a la empresa...");
-        ArrayList<String> stockArchivo = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
-        
-        Producto producto;        
-        
-        //Se crean sets para que no se repitan los valores y para que no de StackOverflow
-        Set s = new HashSet(stockArchivo.size());
-        s.addAll(stockArchivo);
-        List<String> shuffledList = new ArrayList(s.size());
-        shuffledList.addAll(s);
-        
-        for(String linea : shuffledList){
+    
+        String[] lineas = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
+        Random random = new Random();
+
+        for(int i = 0; i < lineas.length; i++){
+            int randomIndice = random.nextInt(lineas.length);
+            String resultado = lineas[randomIndice];
+            lineas[randomIndice] = lineas[i];
+            lineas[i] = resultado;
+        }
+
+        for(String linea : lineas){
             String[] result = linea.split(",");
             Comparable idProducto = result[0];
             int stock = Integer.parseInt(result[1]);
-            
-            producto = buscarProducto(idProducto);
-            
+
+            Producto producto = buscarProducto(idProducto);
+
             if(producto != null){
                 Producto prodAInsertar = new Producto(idProducto, producto.getNombre());
                 TElementoAB<Producto> elemProducto = new TElementoAB<>(prodAInsertar.getEtiqueta(), prodAInsertar);
                 arbolProductosEmpresa.insertar(elemProducto);
                 TElementoAB<Producto> productoPorNombre = new TElementoAB<>(prodAInsertar.getNombre(), prodAInsertar);
                 arbolProductosEmpresaPorNombre.insertar(productoPorNombre);
-                prodAInsertar.agregarStock(stock);                
-            }           
-        }          
+                prodAInsertar.agregarStock(stock); 
+            }       
+        }      
     }
     
     
@@ -248,7 +244,7 @@ public class Empresa implements IEmpresa{
     @Override
     public void insertarSucursalesArchivo(String nombreArchivo) {
         System.out.println("Espere mientras se carga el archivo de sucursales...");
-        ArrayList<String> sucursales = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
+        String[] sucursales = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
         
         for(String linea : sucursales){
             String[] result = linea.split(",");
@@ -263,32 +259,32 @@ public class Empresa implements IEmpresa{
     
     public void agregarStockArchivo(String nombreArchivo){
         System.out.println("Espere mientras se carga el archivo de stock...");
-        ArrayList<String> stockArchivo = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
-        
-        Producto producto;
-        
-        
-        //Se crean sets para que no se repitan los valores y para que no de StackOverflow
-        Set s = new HashSet(stockArchivo.size());
-        s.addAll(stockArchivo);
-        List<String> shuffledList = new ArrayList(s.size());
-        shuffledList.addAll(s);
-        
-        for(String linea : shuffledList){
+    
+        String[] lineas = ManejadorArchivosGenerico.leerArchivo(nombreArchivo);
+        Random random = new Random();
+
+        for(int i = 0; i < lineas.length; i++){
+            int randomIndice = random.nextInt(lineas.length);
+            String resultado = lineas[randomIndice];
+            lineas[randomIndice] = lineas[i];
+            lineas[i] = resultado;
+        }
+
+        for(String linea : lineas){
             String[] result = linea.split(",");
             Comparable idSucursal = result[0];
             Comparable idProducto = result[1];
             int stock = Integer.parseInt(result[2]);
             Sucursal sucursal = buscarSucursal(idSucursal);
-            
+
             if(sucursal != null){
-                producto = buscarProducto(idProducto);
+                Producto producto = buscarProducto(idProducto);
                 Producto prodAInsertar = new Producto(idProducto, producto.getNombre());
                 sucursal.insertarProducto(prodAInsertar);
                 sucursal.insertarProductoPorNombre(prodAInsertar);
                 sucursal.agregarStock(idProducto, stock);
-            }
-        }        
+            }   
+        }
     }
     
     public void restarStockSucursal(Comparable idSucursal, Comparable idProducto, Integer cantidad){

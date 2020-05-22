@@ -58,15 +58,17 @@ public class Producto implements IProducto {
     // y el campo stock quedará inalterado
     public Integer restarStock(Integer stock) {
         if (stock > this.stock) {
-            System.out.println("No se puede sacar mas stock del que tiene.");
+            System.out.println(String.format("\nNo se puede sacar mas stock del que tiene al producto %s.\n", etiqueta));
             return -1;
         } 
         else if(stock == this.stock){
-            System.out.println("El producto se quedó sin stock.");
-            return this.stock;
+            setStock(this.stock - stock);
+            System.out.println(String.format("\nEl producto %s se quedó sin stock.\n", etiqueta));
+            return 0;          //Al ser el mismo monto, devuelve 0
         }
         else {
             setStock(this.stock - stock);
+//            System.out.println(String.format("El nuevo stock del producto %s es de %d.", this.etiqueta, this.stock));
             return this.stock;
         }
     }    

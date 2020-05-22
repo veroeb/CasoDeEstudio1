@@ -34,7 +34,7 @@ public class ManejadorArchivosGenerico {
 		}
 	}
 
-	public static ArrayList leerArchivo(String nombreCompletoArchivo) {
+	public static String[] leerArchivo(String nombreCompletoArchivo) {
 		FileReader fr;
 		ArrayList<String> listaLineasArchivo = new ArrayList<>();
 		try {
@@ -56,6 +56,6 @@ public class ManejadorArchivosGenerico {
 			// e.printStackTrace();
 		}
 
-		return listaLineasArchivo;
+		return listaLineasArchivo.toArray(new String[0]);
 	}
 }

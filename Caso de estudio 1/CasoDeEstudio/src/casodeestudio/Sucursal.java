@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package casodeestudio;
 
 
@@ -138,10 +133,17 @@ public class Sucursal implements ISucursal{
         TElementoAB<Producto> prod = productos.buscar(clave);
         if(prod != null){
             int stockFinal = prod.getDatos().restarStock(cantidad);
-            if(stockFinal != -1)
+            if(stockFinal == -1){
+                return false;                
+            }
+            else if(stockFinal == 0){
+                System.out.println(String.format("\nEl nuevo stock del producto %s en la sucursal %s es de %d.\n", clave, id, stockFinal));
                 return true;
-            else
-                return false;
+            }
+            else{
+                System.out.println(String.format("\nEl nuevo stock del producto %s en la sucursal %s es de %d.\n", clave, id, stockFinal));
+                return true;                
+            }
         }
         else{
             System.out.println("Ese producto no se encuentra en la sucursal.");

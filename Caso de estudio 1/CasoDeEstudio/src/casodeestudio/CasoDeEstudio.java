@@ -38,6 +38,7 @@ public class CasoDeEstudio {
         empresa.getSucursales();
         empresa.agregarStockArchivo("src/casodeestudio/stock.txt");
         empresa.restarStockSucursal("Local 122", "1403796890", 81);
+        empresa.restarStockSucursal("Local 122", "1837994021", 10);
         empresa.eliminarProductoDeTodasLasSucursales("1453060375");
         empresa.buscarProductoEnSucursales("1453060782");
         empresa.listarProductosPorNombre("Local 122");
