@@ -31,7 +31,7 @@ public interface ISucursal {
      * @param clave
      * @return
      */
-    public boolean eliminarProducto(Comparable clave);
+    public Boolean eliminarProducto(Comparable clave);
 
     /**
      * Imprime la lista de productos

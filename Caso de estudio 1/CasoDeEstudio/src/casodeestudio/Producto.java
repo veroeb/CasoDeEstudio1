@@ -49,7 +49,7 @@ public class Producto implements IProducto {
         this.stock = stock;
     }    
 
-    public int agregarStock(Integer stock) {
+    public Integer agregarStock(Integer stock) {
         this.stock += stock;
         return this.stock;
     }

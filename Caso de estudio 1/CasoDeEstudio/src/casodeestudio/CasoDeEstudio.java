@@ -27,7 +27,7 @@ public class CasoDeEstudio {
         */
 //        empresa.agregarStockEmpresa("src/casodeestudio/stockEmpresa.txt");
 //        empresa.restarStockEmpresa("1403796890", 80);
-//        empresa.eliminarProducto("1403796890");
+//        empresa.eliminarProducto("23432");
 //        empresa.buscarProductoEmpresa("1453060782");
 //        empresa.listarPorNombre();
 

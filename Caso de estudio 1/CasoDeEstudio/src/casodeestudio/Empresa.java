@@ -150,9 +150,16 @@ public class Empresa implements IEmpresa{
     }     
      
     public boolean eliminarProducto(Comparable clave) {
-        arbolProductosEmpresa.eliminar(clave);
-        System.out.println(String.format("El producto %s ha sido eliminado de la empresa %s.", clave, nombreEmpresa));
-        return true;
+        TElementoAB<Producto> prod = arbolProductosEmpresa.buscar(clave);
+        if(prod != null){
+            arbolProductosEmpresa.eliminar(clave);
+            System.out.println(String.format("El producto %s ha sido eliminado de la empresa %s.", clave, nombreEmpresa));
+            return true;
+        }
+        else{
+            System.out.println("El producto que desea eliminar, no se encuentra en la empresa.");
+            return false;
+        }
     }    
     
     public void buscarProductoEmpresa(Comparable clave){
@@ -254,7 +261,6 @@ public class Empresa implements IEmpresa{
             insertarSucursal(sucursal);
             insertarSucursalPorDepartamento(sucursal);
         }
-        arbolSucursales.inOrden();
     }
     
     public void agregarStockArchivo(String nombreArchivo){

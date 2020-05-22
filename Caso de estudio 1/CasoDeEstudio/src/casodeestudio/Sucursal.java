@@ -115,34 +115,20 @@ public class Sucursal implements ISucursal{
         }
     }
     
-    //no se usa por ahora
-    public Boolean agregarStockPorNombre(Comparable clave, Integer cantidad) {
-        TElementoAB<Producto> prodNombre = productosPorNombre.buscar(clave);
-        if(prodNombre != null){
-            prodNombre.getDatos().agregarStock(cantidad);
-            return true;            
-        }
-        else{
-            System.out.println("Ese producto no se encuentra en la empresa.");
-            return false;
-        }
-    }
-    
     @Override
     public Boolean restarStock(Comparable clave, Integer cantidad) {
         TElementoAB<Producto> prod = productos.buscar(clave);
         if(prod != null){
             int stockFinal = prod.getDatos().restarStock(cantidad);
-            if(stockFinal == -1){
-                return false;                
-            }
-            else if(stockFinal == 0){
-                System.out.println(String.format("\nEl nuevo stock del producto %s en la sucursal %s es de %d.\n", clave, id, stockFinal));
-                return true;
-            }
-            else{
-                System.out.println(String.format("\nEl nuevo stock del producto %s en la sucursal %s es de %d.\n", clave, id, stockFinal));
-                return true;                
+            switch (stockFinal) {
+                case -1:
+                    return false;
+                case 0:
+                    System.out.println(String.format("\nEl nuevo stock del producto %s en la sucursal %s es de %d.\n", clave, id, stockFinal));
+                    return true;
+                default:
+                    System.out.println(String.format("\nEl nuevo stock del producto %s en la sucursal %s es de %d.\n", clave, id, stockFinal));
+                    return true;                
             }
         }
         else{
@@ -152,10 +138,17 @@ public class Sucursal implements ISucursal{
     }
     
     @Override
-    public boolean eliminarProducto(Comparable clave) {
-        productos.eliminar(clave);
-        System.out.println(String.format("El producto %s ha sido eliminado de la sucursal %s", clave, id));
-        return true;
+    public Boolean eliminarProducto(Comparable clave) {
+        TElementoAB<Producto> prod = productos.buscar(clave);
+        if(prod != null){
+            productos.eliminar(clave);
+            System.out.println(String.format("El producto %s ha sido eliminado de la sucursal %s", clave, id));
+            return true;            
+        }
+        else{
+            System.out.println("El producto que desea eliminar, no se encuentra en la sucursal.");
+            return false;
+        }
     }
 
     @Override
