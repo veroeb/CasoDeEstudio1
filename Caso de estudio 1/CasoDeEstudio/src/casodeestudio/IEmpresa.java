@@ -14,7 +14,7 @@ public interface IEmpresa {
     public void agregarStockEmpresa(String nombreArchivo);
     public Boolean restarStockEmpresa(Comparable clave, Integer cantidad);
     public boolean eliminarProducto(Comparable clave);
-    public void buscarProductoEmpresa(Comparable clave);
+    public Producto buscarProductoEmpresa(Comparable clave);
     public void listarPorNombre();
     
     //Metodos de sucursales
@@ -25,10 +25,9 @@ public interface IEmpresa {
     public void insertarSucursalPorDepartamento(Sucursal sucursal);
     public void insertarSucursalesArchivo(String nombreArchivo);
     public void agregarStockArchivo(String nombreArchivo);
-    public void restarStockSucursal(Comparable idSucursal, Comparable idProducto, Integer cantidad);
-    public void buscarProductoEnSucursalesStock(Comparable claveProducto, Integer stock);
-    public void buscarProductoEnSucursales(Comparable claveProducto);
-    public void eliminarProductoDeTodasLasSucursales(Comparable claveProducto);
+    public Boolean restarStockSucursal(Comparable idSucursal, Comparable idProducto, Integer cantidad);
+    public Boolean buscarProductoEnSucursales(Comparable claveProducto);
+    public Boolean eliminarProductoDeTodasLasSucursales(Comparable claveProducto);
     public void listarProductosPorNombre(Comparable idSucursal);
     public void listarPorDepartamento();
 }

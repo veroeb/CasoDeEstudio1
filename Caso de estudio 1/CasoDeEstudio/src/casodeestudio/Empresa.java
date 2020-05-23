@@ -156,7 +156,7 @@ public class Empresa implements IEmpresa{
     }    
     
     @Override
-    public void buscarProductoEmpresa(Comparable clave){
+    public Producto buscarProductoEmpresa(Comparable clave){
         TElementoAB<Producto> producto = arbolProductosEmpresa.buscar(clave);
         
         if(producto != null){
@@ -166,6 +166,7 @@ public class Empresa implements IEmpresa{
         else{
             System.out.println("El producto no se encuentra en la empresa.");
         }
+        return producto.getDatos();
     }    
     
     @Override
@@ -292,20 +293,20 @@ public class Empresa implements IEmpresa{
     }
     
     @Override
-    public void restarStockSucursal(Comparable idSucursal, Comparable idProducto, Integer cantidad){
+    public Boolean restarStockSucursal(Comparable idSucursal, Comparable idProducto, Integer cantidad){
         Sucursal sucursal = buscarSucursal(idSucursal);
-            
+        Boolean hayStock = false;    
         if(sucursal != null){
-            Boolean hayStock = sucursal.restarStock(idProducto, cantidad);
+            hayStock = sucursal.restarStock(idProducto, cantidad);
             
             if(!hayStock){
                 buscarProductoEnSucursalesStock(idProducto, cantidad);
             }
         }
-    }
-    
-    @Override
-    public void buscarProductoEnSucursalesStock(Comparable claveProducto, Integer stock){
+        return hayStock;
+    }    
+   
+    private void buscarProductoEnSucursalesStock(Comparable claveProducto, Integer stock){
         if(!arbolSucursales.esVacio())
             buscarProductoEnSucursalesStockImplementacion(arbolSucursales.getRaiz(), claveProducto, stock);
         else
@@ -324,42 +325,52 @@ public class Empresa implements IEmpresa{
     }
     
     @Override    
-    public void buscarProductoEnSucursales(Comparable claveProducto){
+    public Boolean buscarProductoEnSucursales(Comparable claveProducto){
+        Boolean seEncontro = false;
         if(!arbolSucursales.esVacio())
-            buscarProductoEnSucursalesImplementacion(arbolSucursales.getRaiz(), claveProducto);
+            seEncontro = buscarProductoEnSucursalesImplementacion(arbolSucursales.getRaiz(), claveProducto);
         else
             System.out.println("La lista de sucursales esta vacia");
+        return seEncontro;
     }
     
-    private void buscarProductoEnSucursalesImplementacion(TElementoAB<Sucursal> elemSucursal, Comparable claveProducto){
+    private Boolean buscarProductoEnSucursalesImplementacion(TElementoAB<Sucursal> elemSucursal, Comparable claveProducto){
+        Boolean seEncontro = false;
         if(elemSucursal.getHijoIzq() != null){
-            buscarProductoEnSucursalesImplementacion(elemSucursal.getHijoIzq(), claveProducto);
+            seEncontro = buscarProductoEnSucursalesImplementacion(elemSucursal.getHijoIzq(), claveProducto) || seEncontro;
         }
         
-        elemSucursal.getDatos().buscarPorCodigo(claveProducto);        
+        Producto p = elemSucursal.getDatos().buscarPorCodigo(claveProducto);    
+        seEncontro = seEncontro || (p != null);
         
         if(elemSucursal.getHijoDer() != null)
-            buscarProductoEnSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);        
+            seEncontro = buscarProductoEnSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto) || seEncontro;       
+        
+        return seEncontro;
     }    
     
     @Override
-    public void eliminarProductoDeTodasLasSucursales(Comparable claveProducto){
+    public Boolean eliminarProductoDeTodasLasSucursales(Comparable claveProducto){
+        Boolean seEncontro = false;
         if(!arbolSucursales.esVacio())
-            eliminarProductoDeTodasLasSucursalesImplementacion(arbolSucursales.getRaiz(), claveProducto);
+            seEncontro = eliminarProductoDeTodasLasSucursalesImplementacion(arbolSucursales.getRaiz(), claveProducto);
         else
             System.out.println("La lista de sucursales esta vacia");
+        return seEncontro;
     }
     
-    private void eliminarProductoDeTodasLasSucursalesImplementacion(TElementoAB<Sucursal> elemSucursal, Comparable claveProducto){
+    private Boolean eliminarProductoDeTodasLasSucursalesImplementacion(TElementoAB<Sucursal> elemSucursal, Comparable claveProducto){
+        Boolean seEncontro = false;
         if(elemSucursal.getHijoIzq() != null){
-            eliminarProductoDeTodasLasSucursalesImplementacion(elemSucursal.getHijoIzq(), claveProducto);
+            seEncontro = eliminarProductoDeTodasLasSucursalesImplementacion(elemSucursal.getHijoIzq(), claveProducto) || seEncontro;
         }
         
-        elemSucursal.getDatos().eliminarProducto(claveProducto);
+        seEncontro =  elemSucursal.getDatos().eliminarProducto(claveProducto) || seEncontro;
         
         if(elemSucursal.getHijoDer() != null)
-            eliminarProductoDeTodasLasSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);       
+            seEncontro = eliminarProductoDeTodasLasSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto) || seEncontro;       
         
+        return seEncontro;
     }
     
     @Override
@@ -386,4 +397,36 @@ public class Empresa implements IEmpresa{
         if(elemSucursal.getHijoDer() != null)
             listarPorDepartamentoImplementacion(elemSucursal.getHijoDer());             
     }    
+    
+    
+    /**
+     * Metodos para usar en los tests
+     */
+    
+    public int tamañoProductos() {
+        
+        if (!arbolProductosBase.esVacio()) {
+            return arbolProductosBase.getRaiz().tamaño();
+        }
+        return 0;
+    
+    }
+    
+    public int tamañoSucursales() {
+        
+        if (!arbolSucursales.esVacio()) {
+            return arbolSucursales.getRaiz().tamaño();
+        }
+        return 0;
+    
+    }
+    
+    public int tamañoSucursalesDepartamento() {
+        
+        if (!arbolSucursalesPorDepartamento.esVacio()) {
+            return arbolSucursalesPorDepartamento.getRaiz().tamaño();
+        }
+        return 0;
+    
+    }
 }

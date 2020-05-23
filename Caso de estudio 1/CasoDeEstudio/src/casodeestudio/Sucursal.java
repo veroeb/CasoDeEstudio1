@@ -207,6 +207,29 @@ public class Sucursal implements ISucursal{
         
         if(producto.getHijoDer() != null)
             listarPorNombreImplementacion(producto.getHijoDer());    
-    }    
+    }  
+    
+    
+    /**
+     * Metodos para usar en los tests
+     */
+    
+    public int tamañoProductos() {
+        
+        if (!productos.esVacio()) {
+            return productos.getRaiz().tamaño();
+        }
+        return 0;
+    
+    }
+    
+    public int tamañoProductosPorNombre() {
+        
+        if (!productosPorNombre.esVacio()) {
+            return productosPorNombre.getRaiz().tamaño();
+        }
+        return 0;
+    
+    }
 
 }
