@@ -49,13 +49,13 @@ public class Producto implements IProducto {
         this.stock = stock;
     }    
 
+    @Override
     public Integer agregarStock(Integer stock) {
         this.stock += stock;
         return this.stock;
     }
     
-// restarStock devolverá -1 si se pretende extraer más de lo que hay... 
-    // y el campo stock quedará inalterado
+    @Override
     public Integer restarStock(Integer stock) {
         if (stock > this.stock) {
             System.out.println(String.format("\nNo se puede sacar mas stock del que tiene al producto %s.\n", etiqueta));

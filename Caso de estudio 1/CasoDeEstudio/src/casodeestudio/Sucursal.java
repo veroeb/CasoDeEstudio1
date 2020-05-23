@@ -97,6 +97,7 @@ public class Sucursal implements ISucursal{
         
     }
     
+    @Override
     public void insertarProductoPorNombre(Producto unProducto) {
         TElementoAB<Producto> productoNombre = new TElementoAB<>(unProducto.getNombre(), unProducto);
         productosPorNombre.insertar(productoNombre);
@@ -166,6 +167,7 @@ public class Sucursal implements ISucursal{
         }
     }
     
+    @Override
     public Producto buscarPorCodigoStock(Comparable clave, Integer stock) {
         TElementoAB<Producto> prod = productos.buscar(clave);
         
@@ -180,6 +182,7 @@ public class Sucursal implements ISucursal{
         }
     }
     
+    @Override
     public void listarPorNombre(Boolean departamento){
         if(!productosPorNombre.esVacio()){
             if(!departamento){
@@ -205,10 +208,5 @@ public class Sucursal implements ISucursal{
         if(producto.getHijoDer() != null)
             listarPorNombreImplementacion(producto.getHijoDer());    
     }    
-    
-    @Override
-    public String imprimirProductos() {
-        return productos.inOrden();
-    }
 
 }

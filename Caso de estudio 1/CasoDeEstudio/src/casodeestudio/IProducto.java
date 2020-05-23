@@ -35,5 +35,8 @@ public interface IProducto{
     public String getNombre();
 
     public void setNombre(String nombre);
+    
+    public Integer agregarStock(Integer stock);
 
+    public Integer restarStock(Integer stock);
 }

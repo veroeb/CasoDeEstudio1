@@ -44,19 +44,8 @@ public class Empresa implements IEmpresa{
     public TArbolBB<Producto> getProductos() {
         System.out.println("Los productos existentes son: " + arbolProductosBase.inOrden());
         return arbolProductosBase;
-    }
+    }  
     
-     @Override
-    public boolean directorioVacio() {
-        if(arbolSucursales.esVacio()){
-            System.out.println("El directorio esta vacio");
-            return true;
-        }            
-        else{
-            System.out.println("El directorio no esta vacio");
-            return false;
-        }  
-    }
     
     private Producto buscarProducto(Comparable idProducto) {
         TElementoAB<Producto> unProducto = arbolProductosBase.buscar(idProducto);
@@ -69,7 +58,8 @@ public class Empresa implements IEmpresa{
         }
     }
     
-     public void insertarProducto(Producto producto) {
+    @Override
+    public void insertarProducto(Producto producto) {
         TElementoAB<Producto> productoId = new TElementoAB<>(producto.getEtiqueta(), producto);
         Producto p = buscarProducto(producto.getEtiqueta());
         
@@ -77,7 +67,8 @@ public class Empresa implements IEmpresa{
             arbolProductosBase.insertar(productoId);     
         }
     }
-        
+     
+    @Override
     public void insertarProductosArchivo(String nombreArchivo) {
         System.out.println("Espere mientras se carga el archivo de productos...");
     
@@ -102,6 +93,7 @@ public class Empresa implements IEmpresa{
         }
     }   
     
+    @Override
     public void agregarStockEmpresa(String nombreArchivo){
         System.out.println("Espere mientras se carga el archivo de stock a la empresa...");
     
@@ -133,8 +125,8 @@ public class Empresa implements IEmpresa{
         }      
     }
     
-    
-     public Boolean restarStockEmpresa(Comparable clave, Integer cantidad) {
+    @Override
+    public Boolean restarStockEmpresa(Comparable clave, Integer cantidad) {
         TElementoAB<Producto> prod = arbolProductosEmpresa.buscar(clave);
         if(prod != null){
             int stockFinal = prod.getDatos().restarStock(cantidad);
@@ -149,6 +141,7 @@ public class Empresa implements IEmpresa{
         }
     }     
      
+    @Override
     public boolean eliminarProducto(Comparable clave) {
         TElementoAB<Producto> prod = arbolProductosEmpresa.buscar(clave);
         if(prod != null){
@@ -162,6 +155,7 @@ public class Empresa implements IEmpresa{
         }
     }    
     
+    @Override
     public void buscarProductoEmpresa(Comparable clave){
         TElementoAB<Producto> producto = arbolProductosEmpresa.buscar(clave);
         
@@ -174,6 +168,7 @@ public class Empresa implements IEmpresa{
         }
     }    
     
+    @Override
     public void listarPorNombre(){
         if(!arbolProductosEmpresaPorNombre.esVacio()){
             System.out.println(String.format("\nLos productos existentes en la empresa \"%s\" son:", nombreEmpresa));  
@@ -215,6 +210,7 @@ public class Empresa implements IEmpresa{
         }
     }
     
+    @Override
     public Sucursal buscarSucursalPorDepartamento(Comparable stringCompuesto) {
         TElementoAB<Sucursal> unaSucursal = arbolSucursalesPorDepartamento.buscar(stringCompuesto);
         
@@ -236,6 +232,7 @@ public class Empresa implements IEmpresa{
         }
     }
     
+    @Override
     public void insertarSucursalPorDepartamento(Sucursal sucursal) {
         String stringCompuesto;
         stringCompuesto = sucursal.getDepartamento() + ", " + sucursal.getCiudad() + ", " 
@@ -263,6 +260,7 @@ public class Empresa implements IEmpresa{
         }
     }
     
+    @Override
     public void agregarStockArchivo(String nombreArchivo){
         System.out.println("Espere mientras se carga el archivo de stock...");
     
@@ -293,6 +291,7 @@ public class Empresa implements IEmpresa{
         }
     }
     
+    @Override
     public void restarStockSucursal(Comparable idSucursal, Comparable idProducto, Integer cantidad){
         Sucursal sucursal = buscarSucursal(idSucursal);
             
@@ -305,6 +304,7 @@ public class Empresa implements IEmpresa{
         }
     }
     
+    @Override
     public void buscarProductoEnSucursalesStock(Comparable claveProducto, Integer stock){
         if(!arbolSucursales.esVacio())
             buscarProductoEnSucursalesStockImplementacion(arbolSucursales.getRaiz(), claveProducto, stock);
@@ -322,7 +322,8 @@ public class Empresa implements IEmpresa{
         if(elemSucursal.getHijoDer() != null)
             buscarProductoEnSucursalesStockImplementacion(elemSucursal.getHijoDer(), claveProducto, stock);        
     }
-        
+    
+    @Override    
     public void buscarProductoEnSucursales(Comparable claveProducto){
         if(!arbolSucursales.esVacio())
             buscarProductoEnSucursalesImplementacion(arbolSucursales.getRaiz(), claveProducto);
@@ -341,6 +342,7 @@ public class Empresa implements IEmpresa{
             buscarProductoEnSucursalesImplementacion(elemSucursal.getHijoDer(), claveProducto);        
     }    
     
+    @Override
     public void eliminarProductoDeTodasLasSucursales(Comparable claveProducto){
         if(!arbolSucursales.esVacio())
             eliminarProductoDeTodasLasSucursalesImplementacion(arbolSucursales.getRaiz(), claveProducto);
@@ -360,11 +362,13 @@ public class Empresa implements IEmpresa{
         
     }
     
+    @Override
     public void listarProductosPorNombre(Comparable idSucursal){
         Sucursal sucursal = buscarSucursal(idSucursal);
         sucursal.listarPorNombre(false);
     }
     
+    @Override
     public void listarPorDepartamento(){
         if(!arbolSucursalesPorDepartamento.esVacio())
             listarPorDepartamentoImplementacion(arbolSucursalesPorDepartamento.getRaiz());

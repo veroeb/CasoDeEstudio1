@@ -24,21 +24,8 @@ public interface ISucursal {
      * @param unProducto
      */
     public void insertarProducto(Producto unProducto);
-
-    /**
-     * Eliminar productos que ya no se venden (por no ser comercializados m�s).
-     *
-     * @param clave
-     * @return
-     */
-    public Boolean eliminarProducto(Comparable clave);
-
-    /**
-     * Imprime la lista de productos
-     *
-     * @return
-     */
-    public String imprimirProductos();
+    
+    public void insertarProductoPorNombre(Producto unProducto);    
 
    
     public Boolean agregarStock(Comparable clave, Integer cantidad);
@@ -52,6 +39,14 @@ public interface ISucursal {
      * @return
      */
     public Boolean restarStock(Comparable clave, Integer cantidad);
+    
+    /**
+     * Eliminar productos que ya no se venden (por no ser comercializados m�s).
+     *
+     * @param clave
+     * @return
+     */
+    public Boolean eliminarProducto(Comparable clave);
 
     /**
      * Dado un código de producto, indicar las existencias del mismo en el
@@ -61,4 +56,8 @@ public interface ISucursal {
      * @return
      */
     public Producto buscarPorCodigo(Comparable clave);
+    
+    public Producto buscarPorCodigoStock(Comparable clave, Integer stock);
+    
+    public void listarPorNombre(Boolean departamento);
 }
